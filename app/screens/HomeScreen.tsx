@@ -1,12 +1,79 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { View, Text, Image, StyleSheet } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
+
+interface Sport {
+  id: number;
+  title: string;
+  sportDescription: string;
+  sportPrice: number;
+  sportImage: string;
+}
 
 const HomeScreen = () => {
-    return (
-        <View>
-        <Text>Home Screen</Text>
+  const [content, setContent] = useState<Sport[]>([]);
+
+  const getItems = async () => {
+    try {
+      const response = await axios.get('http://dev3-craft.ddev.site/sports');
+      setContent(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    getItems();
+  }, []);
+
+  return (
+    <FlatList
+      data={content}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
+        <View style={styles.itemContainer}>
+          <Text style={styles.title}>{item.title}</Text>
+          <Image source={{ uri: item.sportImage }} style={styles.image} />
+          <Text style={styles.price}>Price: ${item.sportPrice}</Text>
         </View>
-    );
-}
+      )}
+      ListHeaderComponent={
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}>Home Screen</Text>
+        </View>
+      }
+    />
+  );
+};
+
+const styles = StyleSheet.create({
+  itemContainer: {
+    marginBottom: 20,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  image: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+  },
+  price: {
+    fontSize: 16,
+  },
+  headerContainer: {
+    padding: 20,
+    backgroundColor: '#f8f8f8',
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+});
 
 export default HomeScreen;
