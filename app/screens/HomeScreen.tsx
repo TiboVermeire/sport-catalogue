@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Alert } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
 interface Sport {
@@ -14,6 +14,7 @@ interface Sport {
 const HomeScreen = () => {
   const [content, setContent] = useState<Sport[]>([]);
 
+  // Fetch data from the API
   const getItems = async () => {
     try {
       const response = await axios.get('http://dev3-craft.ddev.site/sports');
@@ -27,17 +28,35 @@ const HomeScreen = () => {
     getItems();
   }, []);
 
+  // veranderd https naar http zodat images laden
+  const convertHttpsToHttp = (url: string) => {
+    return url.replace(/^https:/, 'http:');
+  };
+
+  const handleImageError = (error: any) => {
+    console.error('Image load error:', error);
+    Alert.alert('Image Load Error', 'There was an issue loading an image.');
+  };
+
   return (
     <FlatList
       data={content}
       keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => (
-        <View style={styles.itemContainer}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Image source={{ uri: item.sportImage }} style={styles.image} />
-          <Text style={styles.price}>Price: ${item.sportPrice}</Text>
-        </View>
-      )}
+      renderItem={({ item }) => {
+        const imageUrl = convertHttpsToHttp(item.sportImage); 
+
+        return (
+          <View style={styles.itemContainer}>
+            <Text style={styles.title}>{item.title}</Text>
+            <Image 
+              source={{ uri: imageUrl }} 
+              style={styles.image} 
+              onError={handleImageError} 
+            />
+            <Text style={styles.price}>Price: ${item.sportPrice}</Text>
+          </View>
+        );
+      }}
       ListHeaderComponent={
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Home Screen</Text>
