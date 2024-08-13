@@ -1,16 +1,31 @@
-// DetailScreen.js
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, TouchableWithoutFeedback, Image } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
+import { Sport } from '../RootStackParamList';
 
-const DetailScreen = ({ route }) => {
-  const { sport } = route.params;
+type RootStackParamList = {
+  Home: undefined;
+  Detail: { sport: Sport };
+  Olympics: undefined;
+};
+
+type DetailScreenProps = StackScreenProps<RootStackParamList, 'Detail'>;
+
+const DetailScreen: React.FC<DetailScreenProps> = ({ navigation, route }) => {
+  const { title, imageUrl, sportDescription, sportPrice } = route.params.sport;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{sport.title}</Text>
-      <Text style={styles.description}>{sport.sportDescription}</Text>
-      <Text style={styles.price}>Price: ${sport.sportPrice}</Text>
-    </View>
+    <ScrollView>
+      <TouchableWithoutFeedback onPress={() => navigation.navigate('Home')}>
+        <Text style={{ padding: 10 }}>Go back to Home</Text>
+      </TouchableWithoutFeedback>
+      <View style={styles.container}>
+        <Text style={styles.title}>{title}</Text>
+        <Image source={{ uri: imageUrl }} style={styles.image} />
+        <Text style={styles.description}>{sportDescription}</Text>
+        <Text style={styles.price}>Price: ${sportPrice}</Text>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -32,6 +47,11 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 18,
     color: '#888',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    marginVertical: 10,
   },
 });
 

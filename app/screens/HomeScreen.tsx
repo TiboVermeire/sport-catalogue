@@ -1,33 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { View, Text, Image, StyleSheet, Button, Alert, SafeAreaView, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Image, StyleSheet, Button, Alert, TouchableWithoutFeedback } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-// Define the types for your navigator
-type RootStackParamList = {
-  Home: undefined;
-  Detail: { sport: Sport };
-  Olympics: undefined;
-};
+import { RootStackParamList, Sport } from '../RootStackParamList';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-interface Sport {
-  id: number;
-  title: string;
-  sportDescription: string;
-  sportPrice: number;
-  sportImage: string; 
-}
+const correctImageUrl = (url: string) => {
+  return url.replace(/(http:\/\/)(.*)(http:\/\/)/, '$1$2https://');
+};
 
-const HomeScreen = ({ navigation }: Props) => {
+const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [content, setContent] = useState<Sport[]>([]);
 
   const getItems = async () => {
     try {
       const response = await axios.get('http://dev3-craft.ddev.site/sports');
-      setContent(response.data.data);
+      const data = response.data.data;
+      // Add the corrected URL to each sport object
+      const updatedData = data.map((item: Sport) => ({
+        ...item,
+        imageUrl: correctImageUrl(item.sportImage)
+      }));
+      setContent(updatedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -36,10 +32,6 @@ const HomeScreen = ({ navigation }: Props) => {
   useEffect(() => {
     getItems();
   }, []);
-
-  const convertHttpsToHttp = (url: string) => {
-    return url.replace(/^https:/, 'http:');
-  };
 
   const handleImageError = (error: any) => {
     console.error('Image load error:', error);
@@ -52,13 +44,11 @@ const HomeScreen = ({ navigation }: Props) => {
       keyExtractor={(item) => item.id.toString()}
       numColumns={2}
       renderItem={({ item }) => {
-        const imageUrl = convertHttpsToHttp(item.sportImage);
-
         return (
           <View style={styles.itemContainer}>
             <Text style={styles.title}>{item.title}</Text>
             <Image 
-              source={{ uri: imageUrl }} 
+              source={{ uri: item.imageUrl }} 
               style={styles.image} 
               onError={handleImageError} 
             />
@@ -75,14 +65,12 @@ const HomeScreen = ({ navigation }: Props) => {
       }}
       ListHeaderComponent={
         <View style={styles.headerContainer}>
-
-      <Text style={styles.headerText}>Sports</Text>
-
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('Olympics')}>
-                <View style={styles.buttonContainer}>
-                <Text style={styles.olympics}>View Olympics</Text>
-                </View>
-            </TouchableWithoutFeedback>
+          <Text style={styles.headerText}>Sports</Text>
+          <TouchableWithoutFeedback onPress={() => navigation.navigate('Olympics')}>
+            <View style={styles.buttonContainer}>
+              <Text style={styles.olympics}>View Olympics</Text>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
       }
     />
@@ -138,14 +126,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
   },
-
-    olympics: {
-        display: 'flex',
-        justifyContent: 'flex-start',
-        fontSize: 18,
-        color: '#000',
-        padding: 10,
-    },
+  olympics: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    fontSize: 18,
+    color: '#000',
+    padding: 10,
+  },
 });
 
 export default HomeScreen;

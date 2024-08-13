@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View, Linking, Button, ScrollView } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
 
 // Define the types for your navigation stack
 type RootStackParamList = {
