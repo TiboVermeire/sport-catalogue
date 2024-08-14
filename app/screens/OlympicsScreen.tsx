@@ -1,31 +1,37 @@
 import React from "react";
-import { StyleSheet, Text, View, Linking, Button, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Linking, Button, ScrollView, Image } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-// Define the types for your navigation stack
 type RootStackParamList = {
   Olympics: undefined;
   Home: undefined;
 };
 
-// Define the props that the OlympicsScreen will receive
 type OlympicsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Olympics'>;
 
 type OlympicsScreenProps = {
   navigation: OlympicsScreenNavigationProp;
 };
 
+
+
 const OlympicsScreen: React.FC<OlympicsScreenProps> = ({ navigation }) => {
     return (
         <ScrollView style={styles.container}>
-            <View>
-                <Text style={styles.Text}>Krijg je maar niet genoeg van al die sporten?</Text>
+          
+            
+            <View style={styles.textContainer}>
+                <Text style={styles.text}>
+                    Are you excited to get to know more about all these sports? 
+                    Go follow the Olympics in Paris on their website!
+                </Text>
             </View>
 
-            <View style={styles.Button}>
+            <View style={styles.buttonContainer}>
                 <Button
-                    title="Olympische spelen Parijs"
+                    title="Olympics 2024"
                     onPress={() => Linking.openURL('https://www.os2024parijs.nl/programma/')}
+                    color={'#000'}
                 />
             </View>
         </ScrollView>
@@ -36,17 +42,28 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: '#fff',
+        backgroundColor: '#505050',
     },
-    Text: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
+    image: {
+        width: '100%',
+        height: 200,
+        resizeMode: 'contain',
+        marginVertical: 10,
     },
-    Button: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
+    textContainer: {
+        marginBottom: 20,
+        alignItems: 'center',
+    },
+    text: {
+        fontSize: 16,
+        textAlign: 'center',
+        color: '#fff',
+    },
+    buttonContainer: {
+        marginVertical: 20,
+        backgroundColor: '#39FF14',
+        borderRadius: 5,
+        overflow: 'hidden',
     },
 });
 

@@ -3,14 +3,14 @@ import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
 import { useCart } from '../CartContext'; // Adjust the path
 
 const CartScreen: React.FC = () => {
-  const { cart, removeFromCart } = useCart();
+  const { cartItems, removeFromCart } = useCart();
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your Cart</Text>
-      {cart.length > 0 ? (
+      {cartItems.length > 0 ? (
         <FlatList
-          data={cart}
+          data={cartItems}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View style={styles.itemContainer}>

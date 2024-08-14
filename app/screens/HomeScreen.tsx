@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { View, Text, Image, StyleSheet, Button, Alert, TextInput, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Image, StyleSheet, Button, Alert, TextInput, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, Sport } from '../RootStackParamList';
@@ -15,7 +15,7 @@ const correctImageUrl = (url: string) => {
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [content, setContent] = useState<Sport[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>(''); // State for search query
-  const { addToCart } = useCart();
+  const { addToCart, cartItems } = useCart();
 
   // Function to fetch data from the API
   const getItems = async () => {
@@ -46,6 +46,11 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     item.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Function to check if an item is in the cart
+  const isInCart = (item: Sport) => {
+    return cartItems.some(cartItem => cartItem.id === item.id);
+  };
+
   return (
     <View style={styles.container}>
       {/* Search Bar */}
@@ -72,11 +77,15 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.price}>Price: ${item.sportPrice}</Text>
             <View style={styles.buttons}>
               <View style={styles.buttonContainer}>
-                <Button
-                  title="Add to Cart" 
-                  onPress={() => addToCart(item)} 
-                  color="#000"
-                />
+                <TouchableOpacity
+                  disabled={isInCart(item)}
+                  style={[styles.cartButton, isInCart(item) && styles.disabledButton]}
+                  onPress={() => addToCart(item)}
+                >
+                  <Text style={styles.buttonText}>
+                    {isInCart(item) ? 'Added' : 'Add to Cart'}
+                  </Text>
+                </TouchableOpacity>
               </View>
               <View style={styles.buttonContainer}>
                 <Button
@@ -88,6 +97,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
             </View>
           </View>
         )}
+        
         ListHeaderComponent={
           <View style={styles.headerContainer}>
             <Text style={styles.headerText}>Sports</Text>
@@ -99,7 +109,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               </TouchableWithoutFeedback>
               <TouchableWithoutFeedback onPress={() => navigation.navigate('Cart')}>
                 <View style={styles.buttonContainer}>
-                  <Text style={styles.olympics}>View Cart</Text>
+                  <Text style={styles.olympics}>View Cart ({cartItems.length})</Text>
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -157,9 +167,21 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: '#39FF14',
     borderRadius: 5,
-    fontSize: 12,
     margin: 5,
     color: '#000',
+  },
+  cartButton: {
+    backgroundColor: '#39FF14',
+    padding: 10,
+    borderRadius: 5,
+  },
+  disabledButton: {
+    backgroundColor: '#d3d3d3',
+  },
+  buttonText: {
+    color: '#000',
+    textAlign: 'center',
+    fontSize: 16,
   },
   headerContainer: {
     display: 'flex',
@@ -170,7 +192,7 @@ const styles = StyleSheet.create({
     backgroundColor:'#f0f0f0',
   },
   headerText: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     color: '#000',
   },
