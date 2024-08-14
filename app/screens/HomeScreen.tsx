@@ -4,6 +4,7 @@ import { View, Text, Image, StyleSheet, Button, Alert, TouchableWithoutFeedback 
 import { FlatList } from 'react-native-gesture-handler';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, Sport } from '../RootStackParamList';
+import { useCart } from '../CartContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -13,12 +14,14 @@ const correctImageUrl = (url: string) => {
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [content, setContent] = useState<Sport[]>([]);
+  const { addToCart } = useCart();
 
+  // Functie om de data op te halen uit de API
   const getItems = async () => {
     try {
       const response = await axios.get('http://dev3-craft.ddev.site/sports');
       const data = response.data.data;
-      // Add the corrected URL to each sport object
+      // Juiste imageUrl toevoegen aan de data
       const updatedData = data.map((item: Sport) => ({
         ...item,
         imageUrl: correctImageUrl(item.sportImage)
@@ -29,6 +32,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     }
   };
 
+  //state hook om de data op te halen
   useEffect(() => {
     getItems();
   }, []);
@@ -53,12 +57,21 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               onError={handleImageError} 
             />
             <Text style={styles.price}>Price: ${item.sportPrice}</Text>
-            <View style={styles.buttonContainer}>
-              <Button
-                title="Explore" 
-                onPress={() => navigation.navigate('Detail', { sport: item })}
-                color="#000"
-              />
+            <View style={styles.buttons}>
+              <View style={styles.buttonContainer}>
+                <Button
+                  title="Add to Cart" 
+                  onPress={() => addToCart(item)} 
+                  color="#000"
+                />
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button
+                  title="Explore" 
+                  onPress={() => navigation.navigate('Detail', { sport: item })}
+                  color="#000"
+                />
+              </View>
             </View>
           </View>
         );
@@ -66,14 +79,21 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
       ListHeaderComponent={
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Sports</Text>
+
+          <View style= {styles.buttons}>
           <TouchableWithoutFeedback onPress={() => navigation.navigate('Olympics')}>
             <View style={styles.buttonContainer}>
               <Text style={styles.olympics}>View Olympics</Text>
             </View>
           </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigation.navigate('Cart')}>
+            <View style={styles.buttonContainer}>
+              <Text style={styles.olympics}>View Cart</Text>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
-      }
-    />
+      </View>
+      }/>
   );
 };
 
@@ -84,7 +104,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#505050',
-    margin: 10,
+    margin: 8,
     padding: 10,
     borderRadius: 20,
   },
@@ -111,6 +131,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: '#39FF14',
     borderRadius: 5,
+    fontSize: 12,
+    margin: 5,
     color: '#000',
   },
   headerContainer: {
@@ -132,6 +154,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#000',
     padding: 10,
+  },
+  buttons: { 
+    display: 'flex', 
+    flexDirection: 'row', 
+    justifyContent: 'center',
+    width: '100%',
   },
 });
 

@@ -1,7 +1,7 @@
 export type RootStackParamList = {
     Home: undefined;
     Detail: { sport: Sport };
-    Cart: undefined;
+    Cart: { sport: Sport };
     Olympics: undefined;
 };
   
