@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, FlatList, Button, StyleSheet, Image } from 'react-native';
-import { useCart } from '../cartContext'; // Adjust the path
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { useCart } from '../CartContext';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const CartScreen: React.FC = () => {
   const { cartItems, removeFromCart } = useCart();
@@ -14,17 +15,19 @@ const CartScreen: React.FC = () => {
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View style={styles.itemContainer}>
-                    <Image source={{ uri: item.imageUrl }} style={styles.image} />
-                    <View style={styles.description}>
-                        <Text style={styles.itemTitle}>{item.title}</Text>
-                        <Text style={styles.itemPrice}>Price: ${item.sportPrice}</Text>
-                    </View>
-              <Button title="Remove from Cart" onPress={() => removeFromCart(item.id)} />
+              <Image source={{ uri: item.imageUrl }} style={styles.image} />
+              <View style={styles.description}>
+                <Text style={styles.itemTitle}>{item.title}</Text>
+                <Text style={styles.itemPrice}>Price: ${item.sportPrice}</Text>
+              </View>
+              <TouchableOpacity onPress={() => removeFromCart(item.id)}>
+                <Icon name="delete-outline" size={36} style={styles.deleteIcon} />
+              </TouchableOpacity>
             </View>
           )}
         />
       ) : (
-        <Text style= {styles.empty}>Your cart is empty.</Text>
+        <Text style={styles.empty}>Your cart is empty.</Text>
       )}
     </View>
   );
@@ -58,21 +61,29 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#333',
   },
-    empty: {
-        fontSize: 36,
-        color: '#fff',
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    image: {
-        width: 100,
-        height: 50,
-        resizeMode: 'contain',
-    },
-    description: {
-        display: 'flex',
-        flexDirection: 'column',
-    },
+  empty: {
+    fontSize: 36,
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  image: {
+    width: 100,
+    height: 50,
+    resizeMode: 'contain',
+    marginRight: 10,
+  },
+  description: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  deleteIcon: {
+    color: '#ff3333',
+    alignSelf: 'center',
+    marginTop: "auto",
+    marginBottom: "auto",
+  },
 });
 
 export default CartScreen;

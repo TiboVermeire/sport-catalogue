@@ -4,7 +4,7 @@ import { View, Text, Image, StyleSheet, Button, Alert, TextInput, TouchableWitho
 import { FlatList } from 'react-native-gesture-handler';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, Sport } from '../RootStackParamList';
-import { useCart } from '../cartContext'; 
+import { useCart } from '../CartContext'; 
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
