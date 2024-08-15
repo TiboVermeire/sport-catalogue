@@ -4,7 +4,7 @@ import { View, Text, Image, StyleSheet, Button, Alert, TextInput, TouchableWitho
 import { FlatList } from 'react-native-gesture-handler';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, Sport } from '../RootStackParamList';
-import { useCart } from '../CartContext';
+import { useCart } from '../cartContext'; 
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -152,10 +152,9 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 150,
-    height: 150,
-    resizeMode: 'contain',
+    height: 110,
     marginVertical: 10,
-    borderRadius: 20,
+    borderRadius: 5,
   },
   price: {
     fontSize: 18,

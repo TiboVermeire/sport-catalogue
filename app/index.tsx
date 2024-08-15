@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './screens/HomeScreen';
 import DetailsScreen from './screens/DetailScreen';
 import CartScreen from './screens/CartScreen';
-import { CartProvider } from './CartContext';
+import { CartProvider } from './cartContext';
 import OlympicsScreen from './screens/OlympicsScreen';
 import { RootStackParamList } from './RootStackParamList';
 

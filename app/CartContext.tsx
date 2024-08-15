@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Sport } from '../RootStackParamList';
+import { Sport } from './RootStackParamList';
 
 type CartContextType = {
   cartItems: Sport[];
