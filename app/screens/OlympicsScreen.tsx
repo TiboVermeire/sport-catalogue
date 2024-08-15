@@ -13,13 +13,13 @@ type OlympicsScreenProps = {
   navigation: OlympicsScreenNavigationProp;
 };
 
-
-
 const OlympicsScreen: React.FC<OlympicsScreenProps> = ({ navigation }) => {
     return (
         <ScrollView style={styles.container}>
-          
-            
+            <Image
+                source={require('../../assets/images/olympic-rings.png')}
+                style={styles.image}
+            />
             <View style={styles.textContainer}>
                 <Text style={styles.text}>
                     Are you excited to get to know more about all these sports? 
